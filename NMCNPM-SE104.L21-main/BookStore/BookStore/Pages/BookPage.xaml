@@ -1,0 +1,226 @@
+﻿<Page x:Class="BookStore.Pages.BookPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:wpf="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:ei ="http://schemas.microsoft.com/expression/2010/interactions"
+        xmlns:cv ="clr-namespace:BookStore.Converters"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+      xmlns:local="clr-namespace:BookStore.Pages"
+      d:DesignHeight="950"
+      d:DesignWidth="1600"
+      Title="BookPage"
+       DataContext="{StaticResource ListBookVM}" 
+      x:Name="BookPg"
+      >
+
+
+
+    <Grid x:Name="Grid" >
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="34*"></RowDefinition>
+            <RowDefinition Height="36*"></RowDefinition>
+            <RowDefinition Height="253*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            x:Name="ListBookTitle"
+            TextWrapping="Wrap"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            Style="{StaticResource MaterialDesignHeadline4TextBlock}"
+            Text="Danh Sách Đầu Sách"
+            FontSize="50"
+            Foreground="#DD2D39A8" FontWeight="Bold" 
+            Height="72" Margin="924,38,-52,96" Width="728" Grid.RowSpan="2"/>
+
+        <materialDesign:Card Margin="30,10,30,0" Grid.Row="1">
+            <Grid Margin="0,0,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="212*"></ColumnDefinition>
+                    <ColumnDefinition Width="90*"></ColumnDefinition>
+                    <ColumnDefinition Width="52*"></ColumnDefinition>
+                    <ColumnDefinition Width="433*"></ColumnDefinition>
+
+                </Grid.ColumnDefinitions>
+                <TextBox
+                    Text ="{Binding ListBooksFiller, UpdateSourceTrigger=PropertyChanged}"
+                    Margin="30,18,10,18"
+                    Grid.Column="0"
+                    x:Name="SearchTextBox"
+                    Padding="30,0,30,0"
+                    materialDesign:HintAssist.Hint="Tìm kiếm"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    FontSize="25"
+                    BorderBrush="Black"
+                    BorderThickness="2" Height="52">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="TextChanged" >
+                            <i:InvokeCommandAction Command="{Binding SearchTextChangedCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBox>
+                <ComboBox
+                    ItemsSource="{Binding ListOptionsSearch, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                    SelectedItem="{Binding SelectedOption, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Margin="10,18,27,18"
+                    Grid.Column="1"
+                    materialDesign:HintAssist.Hint="Tìm theo"
+                    FontSize ="25"
+                    VerticalContentAlignment="Center"
+                    VerticalAlignment="Center"
+                    BorderBrush="Black"
+                    BorderThickness="2"
+                    Padding="30,0,30,0" Height="52" Grid.ColumnSpan="2">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="PreviewTextInput" >
+                            <ei:CallMethodAction TargetObject="{Binding }" MethodName="NumberValidationTextBox" />
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="SelectionChanged">
+                            <i:InvokeCommandAction Command="{Binding OptionsSearchSelectionChangedCommand}">
+                            </i:InvokeCommandAction>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ComboBox>
+
+
+                <Grid 
+                    Grid.Column="3" x:Name="IfSelectBook" Visibility="Hidden">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Button
+                        Grid.Column="0" Height="Auto"
+                        Content="Lựa Chọn"
+                        Command="{Binding SelectBookCommand}"
+                        FontSize="25"
+                        Background="LightGreen" 
+                        Margin="60,20,60,20">
+                    </Button>
+                    <Button
+                        Grid.Column="1" Height="Auto"
+                        Content="Hủy Bỏ"
+                        Command="{Binding ExitSelectCommand}"
+                        FontSize="25"
+                        Background="Red"
+                        Margin="60,20,60,20">
+                    </Button>
+                </Grid>
+
+                <Grid 
+                    Grid.Column="3" x:Name="IfShowListBook" Visibility="Visible">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <Button
+                        FontSize="25"
+                        Grid.Column="0"
+                        Content="Thêm mới"  
+                        Margin="10,20,10,20" 
+                        VerticalAlignment="Center" Height="50" >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <i:InvokeCommandAction Command="{Binding AddBookButtonClickCommand}"
+                                                        CommandParameter="{Binding ElementName=BookPg}">
+                                </i:InvokeCommandAction>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Button>
+                    <Button
+                        FontSize="25"
+                        Grid.Column="1"
+                        Content="Sửa"  
+                        Margin="10,20,10,20" 
+                        Command="{Binding EditBookButtonClickCommand}"
+                        CommandParameter="{Binding ElementName=BookPg}"
+                        VerticalAlignment="Center" Height="50" >
+                    </Button>
+                    <Button
+                        FontSize="25"
+                        Grid.Column="2"
+                        Content="Xóa" 
+                        Margin="10,20,10,20" 
+                        Command="{Binding DeleteBookButtonClickCommand}"
+                        CommandParameter="{Binding ElementName=BookPg}"
+                        VerticalAlignment="Center" Height="50" >
+                    </Button>
+
+                    <Button
+                        FontSize="25"
+                        Grid.Column="3"
+                        Content="Xem sách" 
+                        Margin="10,20,10,20" 
+                        Background="#6485FF"
+                        Command="{Binding SeeDetailCommand}"
+                        CommandParameter="{Binding ElementName=BookPg}"
+                        VerticalAlignment="Center" Height="50" >
+                    </Button>
+                </Grid>
+            </Grid>
+        </materialDesign:Card>
+        <Border BorderBrush="LightGray" BorderThickness="5"
+            Grid.Row="2" Margin="30">
+            <materialDesign:Card >
+                <ListView Margin="10" Name="ListBookListView" ItemsSource="{Binding ListBooks}" 
+                          SelectedItem="{Binding SelectedMBook, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Margin="0" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="LightGray" BorderThickness="4">
+                                <materialDesign:Card>
+                                    <Grid Width="230">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="200"></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+                                        <Image Grid.Row="0" Width ="170"
+                                               Source="{Binding HinhAnhSach}"></Image>
+                                        <TextBlock
+                                            Grid.Row="1"
+                                            Text="{Binding TenSach }"
+                                            Height="50"
+                                            Width="170"
+                                            TextAlignment="Center"
+                                            FontSize="25">
+                                        </TextBlock>
+                                        <TextBlock
+                                            Grid.Row="2"
+                                            Height="10"
+                                            Width="170"
+                                            TextAlignment="Center"
+                                            FontSize="22">
+                                        </TextBlock>
+
+                                    </Grid>
+                                </materialDesign:Card>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+            </materialDesign:Card>
+        </Border>
+    </Grid>
+</Page>
